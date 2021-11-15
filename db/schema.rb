@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_14_220720) do
+ActiveRecord::Schema.define(version: 2021_11_14_232018) do
 
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "password_hash"
     t.string "password_salt"
+    t.string "login_token"
+    t.datetime "login_time"
   end
 
 end

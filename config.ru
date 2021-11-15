@@ -9,7 +9,7 @@ use Rack::Cors do
 end
 
 # Parse JSON from the request body into the params hash
-use Rack::JSONBodyParser
+use Rack::JSONBodyParser, verbs: %w[POST PATCH PUT GET]
 
 # Our application
 run ApplicationController

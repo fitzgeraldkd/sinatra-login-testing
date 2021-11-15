@@ -12,6 +12,27 @@ class User < ActiveRecord::Base
 
   def self.login(username:, password:)
     user = User.find_by(username: username)
-    BCrypt::Engine.hash_secret(password, user.password_salt) == user.password_hash
+    if user && BCrypt::Engine.hash_secret(password, user.password_salt) == user.password_hash
+      user.update(login_token: SecureRandom.uuid, login_time: DateTime.now)
+      {user_id: user.id, login_token: user.login_token}
+    else
+      "Invalid credentials."
+    end
+  end
+
+  def self.current(login_token:)
+    user = User.find_by(login_token: login_token)
+    return user if user == nil
+    if (DateTime.now.to_time - user.login_time) / 1.hours < 1
+      user
+    else
+      user.logout
+      nil
+    end
+  end
+
+  def logout
+    update(login_token: nil, login_time: nil)
+    "Successfully logged out."
   end
 end
